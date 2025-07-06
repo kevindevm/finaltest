@@ -10,13 +10,12 @@ import java.util.List;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderApiResponseDTO {
-
     private String message;
     private Integer id;
     private Order order;
     private List<Order> results;
     private Integer foundOrders;
-    private Integer totalOrders;
+    private Integer totalRecords;
     private String timestamp;
 
     public OrderApiResponseDTO(String message) {
@@ -36,11 +35,11 @@ public class OrderApiResponseDTO {
         this.timestamp = LocalDateTime.now().toString();
     }
 
-    public OrderApiResponseDTO(String message, List<Order> results, Integer totalOrders) {
-        this.message = message;
+    public OrderApiResponseDTO(String keyword, List<Order> results, Integer totalRecords) {
+        this.message = "Found " + results.size() + " of " + totalRecords + " records for keyword: " + keyword;
         this.results = results;
         this.foundOrders = results.size();
-        this.totalOrders = totalOrders;
+        this.totalRecords = totalRecords;
         this.timestamp = LocalDateTime.now().toString();
     }
 }

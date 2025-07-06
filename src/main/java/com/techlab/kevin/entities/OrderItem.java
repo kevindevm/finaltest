@@ -3,11 +3,11 @@ package com.techlab.kevin.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Entity
-@Data
-public class OrderItem {
 
-    @Id
+@Data
+@Entity
+public class OrderItem {
+      @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
@@ -22,4 +22,9 @@ public class OrderItem {
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
+
+    public OrderItem(Product product, Integer quantity) {
+    }
+    public OrderItem() {
+    }
 }

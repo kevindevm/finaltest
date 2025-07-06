@@ -1,27 +1,26 @@
 package com.techlab.kevin.services;
 
-import com.techlab.kevin.entities.Orders;
-import com.techlab.kevin.utils.utils;
+import com.techlab.kevin.entities.Order;
+
 
 import java.util.ArrayList;
 
 public class OrderServiceold {
-    static ArrayList<Orders> allOrders = new ArrayList<>();
+    static ArrayList<Order> allOrders = new ArrayList<>();
 
-    public ArrayList<Orders> getAllOrders() {
+    public ArrayList<Order> getAllOrders() {
         return allOrders;
     }
 
      public static void listOrders() {
-        utils.showTitle("Listar Pedidos");
+
         if (allOrders.isEmpty()) {
-            System.out.println("No hay pedidos registrados.");
+
             return;
         }
 
-        for (Orders o : allOrders) {
-//            System.out.println("\n🧾 Pedido ID: " + o.getID());
-            Orders.showCart(o.getID(),o.getCart());
+        for (Order o : allOrders) {
+            Order.showCart(o.getID(),o.getCart());
         }
     }
 

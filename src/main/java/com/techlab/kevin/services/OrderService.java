@@ -1,28 +1,57 @@
 package com.techlab.kevin.services;
 
 import com.techlab.kevin.dto.OrderApiResponseDTO;
+import com.techlab.kevin.dto.OrderItemRequestDTO;
+import com.techlab.kevin.dto.OrderRequestDTO;
 import com.techlab.kevin.dto.OrderUpdateDTO;
 import com.techlab.kevin.entities.Order;
+import com.techlab.kevin.entities.OrderItem;
+import com.techlab.kevin.entities.Product;
 import com.techlab.kevin.exceptions.OrderNotFoundException;
-import com.techlab.kevin.repository.OrderRepositoryJPA;
+import com.techlab.kevin.exceptions.ProductNotFoundException;
+import com.techlab.kevin.repository.OrderRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class OrderService {
 
-    private final OrderRepositoryJPA orderRepository;
+    private final OrderRepository orderRepository;
 
-    public OrderService(OrderRepositoryJPA orderRepository) {
+    public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 
-    public OrderApiResponseDTO createOrder(Order order) {
+    public OrderApiResponseDTO createOrder(OrderRequestDTO dto) {
+        Order order = new Order();
+        order.setStatus(dto.getStatus());
+
+        List<OrderItem> orderItems = new ArrayList<>();
+        double total = 0;
+
+        for (OrderItemRequestDTO itemDTO : dto.getItems()) {
+            Product product = productRepository.findById(itemDTO.getProductId())
+                    .orElseThrow(() -> new ProductNotFoundException(itemDTO.getProductId().toString()));
+
+            OrderItem item = new OrderItem();
+            item.setProduct(product);
+            item.setQuantity(itemDTO.getQuantity());
+            item.setSubtotal(product.getPrice() * itemDTO.getQuantity());
+            item.setOrder(order);
+
+            orderItems.add(item);
+            total += item.getSubtotal();
+        }
+
+        order.setItems(orderItems);
+        order.setTotalAmount(total);
+
         Order saved = orderRepository.save(order);
-        return new OrderApiResponseDTO("Order created successfully", saved.getId());
+
+        return mapToResponseDTO(saved);
     }
 
     public List<Order> getAllOrders() {
