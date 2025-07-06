@@ -35,11 +35,11 @@ public class OrderApiResponseDTO {
         this.timestamp = LocalDateTime.now().toString();
     }
 
-    public OrderApiResponseDTO(String keyword, List<Order> results, Integer totalRecords) {
-        this.message = "Found " + results.size() + " of " + totalRecords + " records for keyword: " + keyword;
+    public OrderApiResponseDTO(String keyword, List<Order> results, Integer total) {
+        this.message = "Found " + results.size() + " of " + total + " orders for keyword: " + keyword;
         this.results = results;
         this.foundOrders = results.size();
-        this.totalRecords = totalRecords;
+        this.totalRecords = total;
         this.timestamp = LocalDateTime.now().toString();
     }
 }
