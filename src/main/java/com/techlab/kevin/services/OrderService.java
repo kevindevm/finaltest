@@ -1,6 +1,9 @@
 package com.techlab.kevin.services;
 
 import com.techlab.kevin.dto.OrderApiResponseDTO;
+import com.techlab.kevin.dto.OrderItemQuantityUpdateDTO;
+import com.techlab.kevin.dto.ProductApiResponseDTO;
+import com.techlab.kevin.dto.ProductUpdateDTO;
 import com.techlab.kevin.entities.Order;
 import com.techlab.kevin.entities.OrderItem;
 import com.techlab.kevin.entities.Product;
@@ -70,11 +73,34 @@ public class OrderService {
             existing.setStatus(updatedData.getStatus());
         }
 
-        // Solo el estado es actualizable, no los ítems. Para editar ítems, creás un endpoint separado.
         Order saved = orderRepository.save(existing);
         return new OrderApiResponseDTO("Order updated successfully", saved);
     }
+public OrderApiResponseDTO updateItemQuantity(Integer orderId, Integer productId, OrderItemQuantityUpdateDTO dto) {
+    Order order = orderRepository.findById(orderId)
+        .orElseThrow(() -> new OrderNotFoundException(orderId.toString()));
 
+    boolean itemFound = false;
+    double newTotal = 0;
+
+    for (OrderItem item : order.getItems()) {
+        if (item.getProduct().getId().equals(productId)) {
+            item.setQuantity(dto.getQuantity());
+            item.setSubtotal(item.getProduct().getPrice() * dto.getQuantity());
+            itemFound = true;
+        }
+        newTotal += item.getSubtotal();
+    }
+
+    if (!itemFound) {
+        throw new IllegalArgumentException("Product with ID " + productId + " not found in this order.");
+    }
+
+    order.setTotalAmount(newTotal);
+    Order updated = orderRepository.save(order);
+
+    return mapToResponseDTO(updated);
+}
     public OrderApiResponseDTO deleteOrder(Integer id) {
         if (!orderRepository.existsById(id)) {
             throw new OrderNotFoundException("Order with ID " + id + " not found");
@@ -83,4 +109,19 @@ public class OrderService {
         orderRepository.deleteById(id);
         return new OrderApiResponseDTO("Order deleted successfully", id);
     }
+
+
+    private OrderApiResponseDTO mapToResponseDTO(Order order) {
+    return new OrderApiResponseDTO(
+            "Order updated successfully",
+            order.getId(),
+            order.getStatus(),
+            order.getItems(),
+            order.getTotalAmount()
+    );
+}
+
+
+
+
 }

@@ -80,26 +80,26 @@ public ProductApiResponseDTO<Product> productSearchByKeyword(String keyword) {
 
 
 
-    public ResponseEntity<ProductApiResponseDTO<Product>> updateById(Integer id, Product updateData) {
-        return productRepository.findById(id).map(existing -> {
-            if (updateData.getName() != null) existing.setName(updateData.getName());
-            if (updateData.getPrice() > 0) existing.setPrice(updateData.getPrice());
-            if (updateData.getStock() >= 0) existing.setStock(updateData.getStock());
+public ResponseEntity<ProductApiResponseDTO<Product>> updateById(Integer id, Product updateData) {
+    return productRepository.findById(id).map(existing -> {
 
-            Product updated = productRepository.save(existing);
+        if (updateData.getName() != null && !updateData.getName().trim().isEmpty()) {
+            existing.setName(updateData.getName());
+        }
 
-            ProductApiResponseDTO<Product> response = new ProductApiResponseDTO<Product>(
-                    "Producto actualizado correctamente",
-                    updated
-            );
+        if (updateData.getPrice() != null && updateData.getPrice() > 0) {
+            existing.setPrice(updateData.getPrice());
+        }
 
-            return ResponseEntity.ok(response);
-        }).orElseGet(() -> {
-            ProductApiResponseDTO<Product> response = new ProductApiResponseDTO<>(
-                    "Producto con ID " + id + " no encontrado");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        });
-    }
+        if (updateData.getStock() != null && updateData.getStock() >= 0) {
+            existing.setStock(updateData.getStock());
+        }
+
+        Product updated = productRepository.save(existing);
+        return ResponseEntity.ok(new ProductApiResponseDTO<>("Product updated successfully", updated));
+
+    }).orElseThrow(() -> new ProductNotFoundException(id.toString()));
+}
 
 
     public ResponseEntity<ProductApiResponseDTO<Product>> deleteById(Integer id) {

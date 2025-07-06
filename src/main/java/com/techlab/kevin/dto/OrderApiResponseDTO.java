@@ -2,6 +2,7 @@ package com.techlab.kevin.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.techlab.kevin.entities.Order;
+import com.techlab.kevin.entities.OrderItem;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -13,9 +14,6 @@ public class OrderApiResponseDTO {
     private String message;
     private Integer id;
     private Order order;
-    private List<Order> results;
-    private Integer foundOrders;
-    private Integer totalRecords;
     private String timestamp;
 
     public OrderApiResponseDTO(String message) {
@@ -35,11 +33,8 @@ public class OrderApiResponseDTO {
         this.timestamp = LocalDateTime.now().toString();
     }
 
-    public OrderApiResponseDTO(String keyword, List<Order> results, Integer total) {
-        this.message = "Found " + results.size() + " of " + total + " orders for keyword: " + keyword;
-        this.results = results;
-        this.foundOrders = results.size();
-        this.totalRecords = total;
+    public OrderApiResponseDTO(String orderUpdatedSuccessfully, Integer id, String status, List<OrderItem> items, Double totalAmount) {
         this.timestamp = LocalDateTime.now().toString();
+
     }
 }

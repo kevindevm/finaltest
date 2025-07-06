@@ -17,11 +17,11 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "order_id")
-//    @JsonIgnore
+    @JsonIgnore
     private Order order;
-
+    private Double subtotal;
     @ManyToOne(optional = false)
     @JoinColumn(name = "product_id")
     private Product product;
@@ -37,4 +37,6 @@ public class OrderItem {
     public double getSubtotal() {
         return product.getPrice() * quantity;
     }
+
+
 }

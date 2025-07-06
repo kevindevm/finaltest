@@ -26,7 +26,7 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ProductApiResponseDTO<Product>> update(@PathVariable Integer id, @Valid @RequestBody Product product) {
+    public ResponseEntity<ProductApiResponseDTO<Product>> update(@PathVariable Integer id,@Valid @RequestBody Product product) {
         return service.updateById(id, product);
     }
 

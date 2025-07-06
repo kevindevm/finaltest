@@ -2,18 +2,16 @@ package com.techlab.kevin.entities;
 
 import com.techlab.kevin.exceptions.NoStockException;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "orders")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class Order {
 

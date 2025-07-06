@@ -1,7 +1,11 @@
 package com.techlab.kevin.controller;
 
 import com.techlab.kevin.dto.OrderApiResponseDTO;
+import com.techlab.kevin.dto.OrderItemQuantityUpdateDTO;
+import com.techlab.kevin.dto.ProductApiResponseDTO;
+import com.techlab.kevin.dto.ProductUpdateDTO;
 import com.techlab.kevin.entities.Order;
+import com.techlab.kevin.entities.Product;
 import com.techlab.kevin.services.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,9 +43,19 @@ public class OrderController {
     public ResponseEntity<OrderApiResponseDTO> update(@PathVariable Integer id, @Valid @RequestBody Order order) {
         return ResponseEntity.ok(service.updateOrder(id, order));
     }
+    @PatchMapping("/{orderId}/items/{productId}")
+    public ResponseEntity<OrderApiResponseDTO> updateItemQuantity(
+            @PathVariable Integer orderId,
+            @PathVariable Integer productId,
+            @Valid @RequestBody OrderItemQuantityUpdateDTO dto) {
+
+        return ResponseEntity.ok(service.updateItemQuantity(orderId, productId, dto));
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<OrderApiResponseDTO> delete(@PathVariable Integer id) {
         return ResponseEntity.ok(service.deleteOrder(id));
     }
+
 }
