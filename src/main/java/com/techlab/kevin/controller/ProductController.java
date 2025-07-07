@@ -1,6 +1,7 @@
 package com.techlab.kevin.controller;
 
 import com.techlab.kevin.dto.ProductApiResponseDTO;
+import com.techlab.kevin.dto.ProductCreateDTO;
 import com.techlab.kevin.entities.Product;
 import com.techlab.kevin.services.ProductService;
 import jakarta.validation.Valid;
@@ -19,7 +20,11 @@ public class ProductController {
     public ProductController(ProductService service) {
         this.service = service;
     }
-
+    @PostMapping("/bulk")
+    public ResponseEntity<?> createManyProducts(@Valid @RequestBody List<ProductCreateDTO> productDTOs) {
+        List<Product> createdProducts = service.saveAll(productDTOs);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdProducts);
+    }
     @PostMapping
     public ResponseEntity<ProductApiResponseDTO<Product>> create(@RequestBody Product product) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.addProduct(product));

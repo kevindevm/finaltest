@@ -1,11 +1,8 @@
 package com.techlab.kevin.controller;
 
 import com.techlab.kevin.dto.OrderApiResponseDTO;
-import com.techlab.kevin.dto.OrderItemQuantityUpdateDTO;
-import com.techlab.kevin.dto.ProductApiResponseDTO;
-import com.techlab.kevin.dto.ProductUpdateDTO;
 import com.techlab.kevin.entities.Order;
-import com.techlab.kevin.entities.Product;
+import com.techlab.kevin.entities.OrderItem;
 import com.techlab.kevin.services.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,15 +41,25 @@ public class OrderController {
         return ResponseEntity.ok(service.updateOrder(id, order));
     }
     @PatchMapping("/{orderId}/items/{productId}")
-    public ResponseEntity<OrderApiResponseDTO> updateItemQuantity(
+    public ResponseEntity<?> updateItemQuantity(
             @PathVariable Integer orderId,
             @PathVariable Integer productId,
-            @Valid @RequestBody OrderItemQuantityUpdateDTO dto) {
+            @RequestParam Integer quantity) {
 
-        return ResponseEntity.ok(service.updateItemQuantity(orderId, productId, dto));
+        OrderItem updatedItem = service.updateItemQuantity(orderId, productId, quantity);
+
+        return ResponseEntity.ok(new OrderApiResponseDTO("Order item updated successfully",orderId,productId,updatedItem.getQuantity(),updatedItem.getSubtotal())
+);
     }
 
+     @DeleteMapping("/{orderId}/product/{productId}")
+    public ResponseEntity<?> removeProductFromOrder(
+            @PathVariable Integer orderId,
+            @PathVariable Integer productId) {
 
+        Order updated = service.removeItemByProduct(orderId, productId);
+        return ResponseEntity.ok(updated);
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<OrderApiResponseDTO> delete(@PathVariable Integer id) {
         return ResponseEntity.ok(service.deleteOrder(id));

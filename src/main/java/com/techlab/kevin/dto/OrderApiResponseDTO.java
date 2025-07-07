@@ -3,6 +3,7 @@ package com.techlab.kevin.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.techlab.kevin.entities.Order;
 import com.techlab.kevin.entities.OrderItem;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,8 @@ import java.util.List;
 public class OrderApiResponseDTO {
     private String message;
     private Integer id;
+    private Integer productId;
+    private Double newSubtotal;
     private Order order;
     private String timestamp;
 
@@ -31,6 +34,17 @@ public class OrderApiResponseDTO {
         this.message = message;
         this.order = order;
         this.timestamp = LocalDateTime.now().toString();
+    }
+
+    public OrderApiResponseDTO(Integer id, String status, List<OrderItem> items, Double totalAmount) {
+        this.timestamp = LocalDateTime.now().toString();
+
+    }
+
+    public OrderApiResponseDTO(String orderItemUpdatedSuccessfully, Integer orderId
+            , Integer productId, @Min(value = 1, message = "Quantity must be at least 1") Integer quantity, double subtotal) {
+        this.timestamp = LocalDateTime.now().toString();
+
     }
 
     public OrderApiResponseDTO(String orderUpdatedSuccessfully, Integer id, String status, List<OrderItem> items, Double totalAmount) {

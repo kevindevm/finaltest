@@ -1,18 +1,22 @@
 package com.techlab.kevin.services;
 
 import com.techlab.kevin.dto.ProductApiResponseDTO;
+import com.techlab.kevin.dto.ProductCreateDTO;
 import com.techlab.kevin.dto.ProductUpdateDTO;
 import com.techlab.kevin.entities.Product;
 import com.techlab.kevin.exceptions.ProductNotFoundException;
 import com.techlab.kevin.repository.ProductRepository;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -29,6 +33,14 @@ public class ProductService {
 //                .orElse(ResponseEntity.notFound().build());
 //    }
 
+
+    public List<Product> saveAll(List<ProductCreateDTO> dtoList) {
+        List<Product> products = dtoList.stream()
+            .map(dto -> new Product(dto.getName(), dto.getPrice(), dto.getStock()))
+            .collect(Collectors.toList());
+
+        return productRepository.saveAll(products);
+    }
 
 public ProductApiResponseDTO<Product> productSearchByKeyword(String keyword) {
     List<Product> found = productRepository.searchByName(keyword);
@@ -73,7 +85,7 @@ public ProductApiResponseDTO<Product> productSearchByKeyword(String keyword) {
 
     public ProductApiResponseDTO<Product> productSearchByID(Integer id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException(id.toString()));
+                .orElseThrow(() -> new ProductNotFoundException("Product with ID " + id + " not found"));
 
         return new ProductApiResponseDTO<Product>("Producto encontrado correctamente", product);
     }
@@ -98,7 +110,7 @@ public ResponseEntity<ProductApiResponseDTO<Product>> updateById(Integer id, Pro
         Product updated = productRepository.save(existing);
         return ResponseEntity.ok(new ProductApiResponseDTO<>("Product updated successfully", updated));
 
-    }).orElseThrow(() -> new ProductNotFoundException(id.toString()));
+    }).orElseThrow(() -> new ProductNotFoundException("Product with ID " + id + " not found"));
 }
 
 
