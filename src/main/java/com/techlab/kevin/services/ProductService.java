@@ -2,19 +2,12 @@ package com.techlab.kevin.services;
 
 import com.techlab.kevin.dto.ProductApiResponseDTO;
 import com.techlab.kevin.dto.ProductCreateDTO;
-import com.techlab.kevin.dto.ProductUpdateDTO;
 import com.techlab.kevin.entities.Product;
 import com.techlab.kevin.exceptions.ProductNotFoundException;
 import com.techlab.kevin.repository.ProductRepository;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,12 +19,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Product> getById(@PathVariable Integer id) {
-//        return productRepository.findById(id)
-//                .map(ResponseEntity::ok)
-//                .orElse(ResponseEntity.notFound().build());
-//    }
+
 
 
     public List<Product> saveAll(List<ProductCreateDTO> dtoList) {
@@ -47,10 +35,10 @@ public ProductApiResponseDTO<Product> productSearchByKeyword(String keyword) {
     int total = (int) productRepository.count();
 
     if (found.isEmpty()) {
-        return new ProductApiResponseDTO<Product>("No products found for keyword: " + keyword);
+        return new ProductApiResponseDTO<>("No products found for keyword: " + keyword);
     }
 
-    return new ProductApiResponseDTO<Product>(keyword, found, total);
+    return new ProductApiResponseDTO<>(keyword, found, total);
 }
 
     public List<Product> productsList() {
@@ -77,7 +65,7 @@ public ProductApiResponseDTO<Product> productSearchByKeyword(String keyword) {
             throw new IllegalArgumentException("duplicated name");
         }
         Product s = this.productRepository.save(p);
-        return new ProductApiResponseDTO<Product>(
+        return new ProductApiResponseDTO<>(
                 "Producto creado correctamente",
                 s.getId()
         );
@@ -87,7 +75,7 @@ public ProductApiResponseDTO<Product> productSearchByKeyword(String keyword) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product with ID " + id + " not found"));
 
-        return new ProductApiResponseDTO<Product>("Producto encontrado correctamente", product);
+        return new ProductApiResponseDTO<>("Producto encontrado correctamente", product);
     }
 
 
@@ -116,7 +104,7 @@ public ResponseEntity<ProductApiResponseDTO<Product>> updateById(Integer id, Pro
 
     public ResponseEntity<ProductApiResponseDTO<Product>> deleteById(Integer id) {
         if (!productExistByID(id)) {
-            ProductApiResponseDTO<Product> response = new ProductApiResponseDTO<Product>(
+            ProductApiResponseDTO<Product> response = new ProductApiResponseDTO<>(
                     "Producto con ID " + id + " no encontrado"
             );
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
@@ -124,7 +112,7 @@ public ResponseEntity<ProductApiResponseDTO<Product>> updateById(Integer id, Pro
 
         productRepository.deleteById(id);
 
-        ProductApiResponseDTO<Product> response = new ProductApiResponseDTO<Product>(
+        ProductApiResponseDTO<Product> response = new ProductApiResponseDTO<>(
                 "Producto eliminado correctamente"
         );
         return ResponseEntity.status(HttpStatus.OK).body(response);
