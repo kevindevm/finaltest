@@ -5,9 +5,10 @@ import lombok.Data;
 
 @Data
 public class ProductUpdateDTO {
-    private String name;
-    private Double price;
-    @Min(0)
-    private Integer stock;
+
+  private String name;
+  private Double price;
+  @Min(0)
+  private Integer stock;
 
 }
